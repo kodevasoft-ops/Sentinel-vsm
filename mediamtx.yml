@@ -1,0 +1,44 @@
+# Configuración base de MediaMTX.
+# El backend agrega/quita cámaras dinámicamente vía su API de control (puerto 9997),
+# así que la sección "paths" aquí queda vacía a propósito.
+
+logLevel: info
+
+# API HTTP que usa el backend para registrar cámaras dinámicamente
+api: yes
+apiAddress: :9997
+
+# Desde MediaMTX 1.x, la API de control exige autenticación por defecto y el usuario
+# "any" de abajo NO trae permiso "api" (solo publish/read/playback) — por eso el backend
+# recibía 401 al intentar registrar cámaras. Se agrega un usuario dedicado solo para eso.
+# El password DEBE coincidir exactamente con MEDIAMTX_API_PASSWORD en backend/.env
+authInternalUsers:
+  - user: any
+    pass:
+    ips: []
+    permissions:
+      - action: publish
+      - action: read
+      - action: playback
+  - user: sentinel-backend
+    pass: cambia-esta-clave-interna
+    ips: []
+    permissions:
+      - action: api
+
+# Salida WebRTC (WHEP) - lo que consume el navegador para ver video en vivo con baja latencia
+webrtc: yes
+webrtcAddress: :8889
+
+# Salida HLS - respaldo compatible con cualquier navegador/dispositivo, algo más de latencia
+hls: yes
+hlsAddress: :8888
+hlsVariant: lowLatency
+
+# Entrada RTSP estándar (por si quieres apuntar un cliente RTSP directamente, opcional)
+rtsp: yes
+rtspAddress: :8554
+
+paths:
+  all_others:
+
